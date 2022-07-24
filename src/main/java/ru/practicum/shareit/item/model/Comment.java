@@ -7,40 +7,38 @@ import ru.practicum.shareit.user.model.User;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import java.util.List;
+import javax.validation.constraints.Size;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
-@NoArgsConstructor
 @Getter
 @Setter
 @ToString
+@RequiredArgsConstructor
 @Entity
-@Table(name = "items")
-public class Item {
+@Table(name = "comments")
+public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    @NotBlank
-    private String name;
-    @NotBlank
-    private String description;
-    private boolean available;
+    Long id;
+
+    @NotBlank @Size(max = 4000) String text;
 
     @ManyToOne
-    @JoinColumn(name = "owner_id")
-    @NotNull
-    private User owner;
+    Item item;
 
-    @OneToMany(mappedBy = "item", fetch = FetchType.LAZY)
-    @ToString.Exclude
-    List<Comment> comments;
+    @ManyToOne
+    User author;
+
+    @NotNull
+    LocalDateTime created;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-        Item item = (Item) o;
-        return id != null && Objects.equals(id, item.id);
+        Comment comment = (Comment) o;
+        return id != null && Objects.equals(id, comment.id);
     }
 
     @Override

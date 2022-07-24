@@ -1,4 +1,4 @@
-package ru.practicum.shareit.item.model;
+package ru.practicum.shareit.requests.model;
 
 import lombok.*;
 import org.hibernate.Hibernate;
@@ -7,40 +7,33 @@ import ru.practicum.shareit.user.model.User;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import java.util.List;
+import java.time.LocalDate;
 import java.util.Objects;
 
-@NoArgsConstructor
 @Getter
 @Setter
 @ToString
+@RequiredArgsConstructor
 @Entity
-@Table(name = "items")
-public class Item {
+@Table(name = "item_requests")
+public class ItemRequest {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    @NotBlank
-    private String name;
-    @NotBlank
-    private String description;
-    private boolean available;
+    Long id;
+
+    @NotBlank String description;
 
     @ManyToOne
-    @JoinColumn(name = "owner_id")
-    @NotNull
-    private User owner;
+    User requester;
 
-    @OneToMany(mappedBy = "item", fetch = FetchType.LAZY)
-    @ToString.Exclude
-    List<Comment> comments;
+    @NotNull LocalDate created;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-        Item item = (Item) o;
-        return id != null && Objects.equals(id, item.id);
+        ItemRequest that = (ItemRequest) o;
+        return id != null && Objects.equals(id, that.id);
     }
 
     @Override

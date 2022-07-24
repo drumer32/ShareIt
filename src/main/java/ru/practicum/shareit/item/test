@@ -1,0 +1,25 @@
+[
+    {
+        "id": 2,
+        "name": "Отвертка",
+        "description": "Аккумуляторная отвертка",
+        "available": true,
+        "comments": [
+            {
+                "id": 1,
+                "text": "Add comment from user1",
+                "authorName": "updateName",
+                "created": "2022-07-22T16:51:17.325216"
+            }
+        ],
+        "lastBooking": {
+            "id": 1,
+            "bookerId": 1
+        },
+        "nextBooking": {
+            "id": 2,
+            "bookerId": 1
+        }
+    }
+]
+

@@ -2,57 +2,106 @@ package ru.practicum.shareit.item;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.exceptions.ObjectNotFoundException;
+import ru.practicum.shareit.booking.service.BookingService;
+import ru.practicum.shareit.exceptions.HasNotBookingsException;
 import ru.practicum.shareit.exceptions.ObjectNotValidException;
-import ru.practicum.shareit.item.model.ItemDto;
+import ru.practicum.shareit.item.dto.*;
+import ru.practicum.shareit.item.model.Comment;
+import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.service.ItemService;
+import ru.practicum.shareit.user.service.UserService;
 
 import javax.validation.Valid;
-import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/items")
 @RequiredArgsConstructor
 @Slf4j
+@Validated
 public class ItemController {
-
     private static final String HEADER_REQUEST = "X-Sharer-User-Id";
+
+    private final BookingService bookingService;
     private final ItemService itemService;
+    private final UserService userService;
+    private final ModelMapper modelMapper;
+
+    @GetMapping
+    List<OwnerItemDto> getAll(@RequestHeader(HEADER_REQUEST) long userId) {
+        return itemService.getAll(userId).stream().map(item -> {
+            OwnerItemDto ownerItemDto = modelMapper.map(item, OwnerItemDto.class);
+            ownerItemDto.setLastBooking(bookingService.getLastByItemId(item.getId()));
+            ownerItemDto.setNextBooking(bookingService.getNextByItemId(item.getId()));
+            ownerItemDto.setComments(itemService.getComments(item.getId()));
+            return ownerItemDto;
+        }).collect(Collectors.toList());
+    }
+
+    @GetMapping("{id}")
+    OwnerItemDto get(@PathVariable long id, @RequestHeader(HEADER_REQUEST) long userId) {
+        Item item = itemService.get(id);
+        OwnerItemDto ownerItemDto = modelMapper.map(item, OwnerItemDto.class);
+        ownerItemDto.setComments(itemService.getComments(id));
+        if (item.getOwner().getId() == userId) {
+            ownerItemDto.setLastBooking(bookingService.getLastByItemId(id));
+            ownerItemDto.setNextBooking(bookingService.getNextByItemId(id));
+        }
+        return ownerItemDto;
+    }
 
     @PostMapping
-    public ItemDto createItem(@Valid @RequestBody ItemDto itemDto, @RequestHeader(HEADER_REQUEST) Long userId)
-            throws ObjectNotValidException, ObjectNotFoundException {
-        return itemService.createItem(itemDto, userId);
+    Item create(@Valid @RequestBody CreateItemDto createItemDto,
+                @RequestHeader(HEADER_REQUEST) long userId) {
+        Item item = modelMapper.map(createItemDto, Item.class);
+        item.setOwner(userService.get(userId));
+        return itemService.save(item);
     }
 
-    @PatchMapping(value = {"/{id}"})
-    public ItemDto updateItem(@Validated @PathVariable Long id,
-                              @RequestBody ItemDto itemDto,
-                              @RequestHeader(HEADER_REQUEST) Long userId)
-            throws ObjectNotFoundException, ObjectNotValidException {
-        return itemService.updateItem(id, itemDto, userId);
+    @PatchMapping("{id}")
+    Item update(@PathVariable long id,
+                @Valid @RequestBody UpdateItemDto updateItemDto,
+                @RequestHeader(HEADER_REQUEST) long userId) throws ObjectNotValidException {
+        Item item = itemService.get(id);
+        if (item.getOwner().getId() != userId) throw new ObjectNotValidException();
+        modelMapper.map(updateItemDto, item);
+        return itemService.save(item);
     }
 
-    @GetMapping(value = {"/{id}"})
-    public ItemDto getItemById(@PathVariable Long id) throws ObjectNotFoundException {
-        return itemService.getItemById(id);
+    @DeleteMapping("{id}")
+    void delete(@PathVariable long id) {
+        itemService.delete(id);
     }
 
     @GetMapping("/search")
-    public Collection<ItemDto> searchItemByTitle(@RequestParam String text) {
-        return itemService.searchItemByTitle(text);
+    List<PublicItemDto> search(@RequestParam(defaultValue = "") String text) {
+        return itemService.searchBy(text)
+                .stream()
+                .map(item -> modelMapper.map(item, PublicItemDto.class))
+                .collect(Collectors.toList());
     }
 
-    @DeleteMapping(value = {"/{id}"})
-    public void deleteItem(@PathVariable Long id) throws ObjectNotFoundException {
-        itemService.deleteItem(id);
-    }
+    @PostMapping("{id}/comment")
+    PublicCommentDto addComment(@PathVariable long id,
+                                @Valid @RequestBody CreateCommentDto createCommentDto,
+                                @RequestHeader(HEADER_REQUEST) long userId) throws HasNotBookingsException {
+        if (!bookingService.isHasBookingsByItemIdAndUserId(id, userId)) {
+            throw new HasNotBookingsException();
+        }
 
-    @GetMapping
-    public Collection<ItemDto> getItemByUserId(@RequestHeader(HEADER_REQUEST) Long userId)
-            throws ObjectNotFoundException {
-        return itemService.getItemsByUserId(userId);
+        Comment comment = modelMapper.map(createCommentDto, Comment.class);
+        comment.setItem(itemService.get(id));
+        comment.setAuthor(userService.get(userId));
+
+        itemService.saveComment(comment);
+
+        PublicCommentDto publicCommentDto = modelMapper.map(comment, PublicCommentDto.class);
+        publicCommentDto.setAuthorName(comment.getAuthor().getName());
+
+        return publicCommentDto;
     }
 }
