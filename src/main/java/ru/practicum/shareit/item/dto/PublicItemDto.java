@@ -16,5 +16,7 @@ public class PublicItemDto {
 
     Boolean available;
 
+    Long requestId;
+
     List<PublicCommentDto> comments;
 }

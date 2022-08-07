@@ -13,4 +13,6 @@ public class CreateItemDto {
     @NotBlank @Size(max = 4000) String description;
 
     @NotNull Boolean available;
+
+    long requestId;
 }

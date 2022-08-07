@@ -27,6 +27,12 @@ public class User {
     @NotNull @Email
     String email;
 
+    public User(long id, String name, String email) {
+        this.id = id;
+        this.name = name;
+        this.email = email;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

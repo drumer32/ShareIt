@@ -2,6 +2,8 @@ package ru.practicum.shareit.item.model;
 
 import lombok.*;
 import org.hibernate.Hibernate;
+import org.springframework.lang.Nullable;
+import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.user.model.User;
 
 import javax.persistence.*;
@@ -20,10 +22,13 @@ public class Item {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @NotBlank
     private String name;
+
     @NotBlank
     private String description;
+
     private boolean available;
 
     @ManyToOne
@@ -34,6 +39,15 @@ public class Item {
     @OneToMany(mappedBy = "item", fetch = FetchType.LAZY)
     @ToString.Exclude
     List<Comment> comments;
+
+    @Nullable
+    private long requestId;
+
+    @Transient
+    Booking lastBooking;
+
+    @Transient
+    Booking nextBooking;
 
     @Override
     public boolean equals(Object o) {

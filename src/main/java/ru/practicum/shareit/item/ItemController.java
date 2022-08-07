@@ -56,7 +56,8 @@ public class ItemController {
 
     @PostMapping
     Item create(@Valid @RequestBody CreateItemDto createItemDto,
-                @RequestHeader(HEADER_REQUEST) long userId) {
+                @RequestHeader(HEADER_REQUEST) long userId,
+            @PathVariable long requestId) {
         Item item = modelMapper.map(createItemDto, Item.class);
         item.setOwner(userService.get(userId));
         return itemService.save(item);

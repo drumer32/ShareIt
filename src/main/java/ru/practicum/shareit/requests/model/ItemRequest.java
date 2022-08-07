@@ -2,12 +2,16 @@ package ru.practicum.shareit.requests.model;
 
 import lombok.*;
 import org.hibernate.Hibernate;
+import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.User;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Getter
@@ -26,7 +30,19 @@ public class ItemRequest {
     @ManyToOne
     User requester;
 
-    @NotNull LocalDate created;
+    @OneToMany(mappedBy = "requestId")
+    List<Item> items;
+
+    @NotNull
+    LocalDate created = LocalDate.now();
+
+    public ItemRequest(Long id, String description, User requester, List<Item> items, LocalDate created) {
+        this.id = id;
+        this.description = description;
+        this.requester = requester;
+        this.items = items;
+        this.created = created;
+    }
 
     @Override
     public boolean equals(Object o) {

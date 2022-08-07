@@ -19,6 +19,8 @@ public class OwnerItemDto {
 
     List<PublicCommentDto> comments;
 
+    Long requestId;
+
     InnerBookingDto lastBooking;
 
     InnerBookingDto nextBooking;
