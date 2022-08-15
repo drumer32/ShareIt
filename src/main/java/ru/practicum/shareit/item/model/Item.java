@@ -9,6 +9,7 @@ import ru.practicum.shareit.user.model.User;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -41,13 +42,23 @@ public class Item {
     List<Comment> comments;
 
     @Nullable
-    private long requestId;
+    private Long requestId;
 
     @Transient
     Booking lastBooking;
 
     @Transient
     Booking nextBooking;
+
+    public Item(Long l, String name, String description2, boolean b, User user, ArrayList<Comment> objects, Long l1) {
+        this.id = l;
+        this.name = name;
+        this.description = description2;
+        this.available = b;
+        this.owner = user;
+        this.comments = objects;
+        this.requestId = l1;
+    }
 
     @Override
     public boolean equals(Object o) {

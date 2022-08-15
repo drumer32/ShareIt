@@ -10,6 +10,7 @@ import ru.practicum.shareit.requests.model.ItemRequestDto;
 import ru.practicum.shareit.requests.model.ItemRequest;
 import ru.practicum.shareit.requests.model.PublicItemRequestDto;
 import ru.practicum.shareit.requests.service.ItemRequestService;
+import ru.practicum.shareit.requests.service.OffsetPageRequest;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -27,7 +28,7 @@ public class ItemRequestController {
     List<ItemRequest> getAll(@RequestParam(defaultValue = "0") int from,
                                       @RequestParam(defaultValue = "5") int size,
                                       @RequestHeader(HEADER_REQUEST) long userId) {
-        return itemRequestService.getAll(userId, PageRequest.of(from, size));
+        return itemRequestService.getAll(userId, OffsetPageRequest.of(from, size));
     }
 
     @GetMapping("{id}")

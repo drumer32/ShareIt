@@ -7,17 +7,17 @@ import ru.practicum.shareit.item.model.Item;
 import java.util.List;
 
 public interface ItemService {
-    List<Item> getAll(long userId);
+    List<Item> getAll(Long userId);
 
-    Item get(long id);
+    Item get(Long id);
 
     Item save(Item item);
 
-    void delete(long id);
+    void delete(Long id);
 
     List<Item> searchBy(String text);
 
     Comment saveComment(Comment comment);
 
-    List<PublicCommentDto> getComments(long itemId);
+    List<PublicCommentDto> getComments(Long itemId);
 }

@@ -10,7 +10,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import ru.practicum.shareit.requests.model.ItemRequest;
 import ru.practicum.shareit.requests.service.ItemRequestService;
 import ru.practicum.shareit.user.model.User;
-import ru.practicum.shareit.user.service.UserService;
 
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
@@ -30,14 +29,12 @@ import static ru.practicum.shareit.ShareItTests.objectMapper;
 @SpringBootTest
 @AutoConfigureMockMvc
 public class RequestControllerTest {
+
     @Autowired
     MockMvc mvc;
 
     @MockBean
     ItemRequestService itemRequestService;
-
-    @Autowired
-    UserService userService;
 
     private static final String HEADER_REQUEST = "X-Sharer-User-Id";
     private User user = new User(

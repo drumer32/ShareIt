@@ -25,12 +25,12 @@ public class ItemServiceImpl implements ItemService {
     private final ModelMapper modelMapper;
 
     @Override
-    public List<Item> getAll(long userId) {
+    public List<Item> getAll(Long userId) {
         return itemRepository.getAllByOwnerId(userId);
     }
 
     @Override
-    public Item get(long id) {
+    public Item get(Long id) {
         return itemRepository.findById(id).orElseThrow();
     }
 
@@ -42,7 +42,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     @Transactional
-    public void delete(long id) {
+    public void delete(Long id) {
         itemRepository.delete(itemRepository.getReferenceById(id));
     }
 
@@ -58,7 +58,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<PublicCommentDto> getComments(long itemId) {
+    public List<PublicCommentDto> getComments(Long itemId) {
         return commentRepository.getAllByItemId(itemId).stream().map(comment -> {
             PublicCommentDto publicCommentDto = modelMapper.map(comment, PublicCommentDto.class);
             publicCommentDto.setAuthorName(comment.getAuthor().getName());

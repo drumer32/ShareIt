@@ -32,7 +32,7 @@ public class ItemController {
     private final ModelMapper modelMapper;
 
     @GetMapping
-    List<OwnerItemDto> getAll(@RequestHeader(HEADER_REQUEST) long userId) {
+    List<OwnerItemDto> getAll(@RequestHeader(HEADER_REQUEST) Long userId) {
         return itemService.getAll(userId).stream().map(item -> {
             OwnerItemDto ownerItemDto = modelMapper.map(item, OwnerItemDto.class);
             ownerItemDto.setLastBooking(bookingService.getLastByItemId(item.getId()));
@@ -43,7 +43,7 @@ public class ItemController {
     }
 
     @GetMapping("{id}")
-    OwnerItemDto get(@PathVariable long id, @RequestHeader(HEADER_REQUEST) long userId) {
+    OwnerItemDto get(@PathVariable Long id, @RequestHeader(HEADER_REQUEST) Long userId) {
         Item item = itemService.get(id);
         OwnerItemDto ownerItemDto = modelMapper.map(item, OwnerItemDto.class);
         ownerItemDto.setComments(itemService.getComments(id));

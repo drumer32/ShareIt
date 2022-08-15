@@ -40,6 +40,9 @@ public class Booking {
     @Enumerated(EnumType.ORDINAL)
     Status status;
 
+    public Booking(Long l, LocalDateTime now, LocalDateTime now1, Item item, User booker, Status status) {
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

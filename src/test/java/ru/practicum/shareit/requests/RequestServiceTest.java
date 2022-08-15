@@ -50,7 +50,7 @@ public class RequestServiceTest {
 
     @Test
     void getAll() {
-        assertEquals(List.of(itemRequest), requestService.getAll(user.getId(), PageRequest.of(0, 100)));
+        assertEquals(List.of(itemRequest), requestService.getAll(user.getId(), null));
     }
 
     @Test
