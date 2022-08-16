@@ -33,31 +33,29 @@ public class Item {
     private boolean available;
 
     @ManyToOne
-    @JoinColumn(name = "owner_id")
-    @NotNull
     private User owner;
 
-    @OneToMany(mappedBy = "item", fetch = FetchType.LAZY)
-    @ToString.Exclude
-    List<Comment> comments;
+    @OneToMany(mappedBy = "item", fetch = FetchType.EAGER)
+    private List<Comment> comments;
 
     @Nullable
-    private Long requestId;
+    private Long itemRequestId;
 
     @Transient
-    Booking lastBooking;
+    private Booking lastBooking;
 
     @Transient
-    Booking nextBooking;
+    private Booking nextBooking;
 
-    public Item(Long l, String name, String description2, boolean b, User user, ArrayList<Comment> objects, Long l1) {
-        this.id = l;
+    public Item(Long id, String name, String description, boolean available,
+                User owner, ArrayList<Comment> comments, Long itemRequestId) {
+        this.id = id;
         this.name = name;
-        this.description = description2;
-        this.available = b;
-        this.owner = user;
-        this.comments = objects;
-        this.requestId = l1;
+        this.description = description;
+        this.available = available;
+        this.owner = owner;
+        this.comments = comments;
+        this.itemRequestId = itemRequestId;
     }
 
     @Override

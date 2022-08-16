@@ -3,14 +3,10 @@ package ru.practicum.shareit.requests;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.requests.model.ItemRequest;
 import ru.practicum.shareit.requests.repository.ItemRequestRepository;
 import ru.practicum.shareit.requests.service.ItemRequestService;
-import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.service.UserService;
 
 import java.time.LocalDate;
@@ -19,6 +15,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static ru.practicum.shareit.ModelsRepForTests.*;
 
 @Transactional
 @SpringBootTest
@@ -27,15 +24,6 @@ public class RequestServiceTest {
     ItemRequestRepository repository;
     ItemRequestService requestService;
     UserService userService;
-
-    private User user = new User(1L, "test", "test@gmail.com");
-
-    private ItemRequest itemRequest = new ItemRequest(
-            1L,
-            "testDescription",
-            user,
-            new ArrayList<>(),
-            LocalDate.now());
 
     @Autowired
     public RequestServiceTest(ItemRequestRepository repository,

@@ -40,7 +40,14 @@ public class Booking {
     @Enumerated(EnumType.ORDINAL)
     Status status;
 
-    public Booking(Long l, LocalDateTime now, LocalDateTime now1, Item item, User booker, Status status) {
+    public Booking(Long id, LocalDateTime start, LocalDateTime end,
+                   Item item, User booker, Status status) {
+        this.id = id;
+        this.start = start;
+        this.end = end;
+        this.item = item;
+        this.booker = booker;
+        this.status = status;
     }
 
     @Override

@@ -34,6 +34,11 @@ public class Comment {
     LocalDateTime created;
 
     public Comment(Long id, String text, Item item, User user, LocalDateTime created) {
+        this.id = id;
+        this.text = text;
+        this.item = item;
+        this.author = user;
+        this.created = created;
     }
 
     @Override

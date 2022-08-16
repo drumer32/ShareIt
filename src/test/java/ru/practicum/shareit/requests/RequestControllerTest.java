@@ -25,6 +25,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static ru.practicum.shareit.ShareItTests.objectMapper;
+import static ru.practicum.shareit.ModelsRepForTests.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -37,17 +38,6 @@ public class RequestControllerTest {
     ItemRequestService itemRequestService;
 
     private static final String HEADER_REQUEST = "X-Sharer-User-Id";
-    private User user = new User(
-            1L, 
-            "test", 
-            "test@gmail.com");
-
-    private ItemRequest itemRequest = new ItemRequest(
-            1L,
-            "testDescription",
-            user,
-            new ArrayList<>(),
-            LocalDate.now());
 
     @Test
     void testGetAll() throws Exception {
@@ -95,8 +85,13 @@ public class RequestControllerTest {
 
     @Test
     void testUpdate() throws Exception {
-        ItemRequest itemRequest1 = new ItemRequest(1L, "testDescriptionUpdated",
-                user, new ArrayList<>(), LocalDate.now());
+        ItemRequest itemRequest1 = new ItemRequest(
+                2L,
+                "testDescriptionUpdated",
+                user,
+                new ArrayList<>(),
+                LocalDate.now()
+        );
         when(itemRequestService.get(anyLong()))
                 .thenReturn(itemRequest);
         when(itemRequestService.save(any()))

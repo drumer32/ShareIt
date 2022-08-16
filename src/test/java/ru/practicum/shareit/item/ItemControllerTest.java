@@ -1,7 +1,6 @@
 package ru.practicum.shareit.item;
 
 import java.nio.charset.StandardCharsets;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +16,6 @@ import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.service.ItemService;
 import ru.practicum.shareit.user.model.User;
-import ru.practicum.shareit.user.service.UserService;
 
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
@@ -28,6 +26,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static ru.practicum.shareit.ShareItTests.objectMapper;
+import static ru.practicum.shareit.ModelsRepForTests.*;
 
 @AutoConfigureMockMvc
 @SpringBootTest
@@ -41,22 +40,6 @@ public class ItemControllerTest {
     @MockBean
     ItemService itemService;
 
-     private User user = new User(
-            1L,
-            "test",
-            "test@gmail.com");
-
-    private Item item = new Item(
-            1L,
-            "name",
-            "description",
-            true,
-            user,
-            new ArrayList<>(),
-            1L
-    );
-
-
     @Test
     public void getAllTest() throws Exception {
         when(itemService.getAll(anyLong()))
@@ -64,7 +47,7 @@ public class ItemControllerTest {
         mvc.perform(get("/items")
                         .header(HEADER_REQUEST, user.getId()))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].description", is(item.getName())))
+                .andExpect(jsonPath("$[0].name", is(item.getName())))
                 .andExpect(jsonPath("$[0].description", is(item.getDescription())));
     }
 
@@ -126,13 +109,6 @@ public class ItemControllerTest {
 
     @Test
     public void addCommentTest() throws Exception {
-        Comment comment = new Comment(
-                1L,
-                "text",
-                item,
-                user,
-                LocalDateTime.now()
-        );
         when(itemService.saveComment(any()))
                 .thenReturn(comment);
         mvc.perform(post("items/{id}/comment")
