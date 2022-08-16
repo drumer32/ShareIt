@@ -14,6 +14,7 @@ import java.util.Objects;
 @Setter
 @ToString
 @RequiredArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "bookings")
 public class Booking {
@@ -28,27 +29,15 @@ public class Booking {
     @Column(name = "end_date_time")
     @NotNull LocalDateTime end;
 
-    @NotNull
     @ManyToOne
     Item item;
 
-    @NotNull
     @ManyToOne
     User booker;
 
     @NotNull
     @Enumerated(EnumType.ORDINAL)
     Status status;
-
-    public Booking(Long id, LocalDateTime start, LocalDateTime end,
-                   Item item, User booker, Status status) {
-        this.id = id;
-        this.start = start;
-        this.end = end;
-        this.item = item;
-        this.booker = booker;
-        this.status = status;
-    }
 
     @Override
     public boolean equals(Object o) {

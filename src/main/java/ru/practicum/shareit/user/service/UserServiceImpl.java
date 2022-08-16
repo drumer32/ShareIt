@@ -23,8 +23,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User get(long id) {
-        return userRepository.findById(id).orElseThrow();
+    public User get(Long id) {
+        return userRepository.findById(id).orElse(new User());
     }
 
     @Override
@@ -35,7 +35,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void delete(long id) {
+    public void delete(Long id) {
         userRepository.delete(userRepository.getReferenceById(id));
     }
 }

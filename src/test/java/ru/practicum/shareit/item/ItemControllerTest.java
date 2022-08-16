@@ -1,9 +1,9 @@
 package ru.practicum.shareit.item;
 
 import java.nio.charset.StandardCharsets;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
 import  org.junit.jupiter.api.Test;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,10 +12,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.service.ItemService;
-import ru.practicum.shareit.user.model.User;
+import ru.practicum.shareit.user.service.UserService;
 
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
@@ -40,8 +39,11 @@ public class ItemControllerTest {
     @MockBean
     ItemService itemService;
 
+    @MockBean
+    UserService userService;
+
     @Test
-    public void getAllTest() throws Exception {
+    public void testGetAll() throws Exception {
         when(itemService.getAll(anyLong()))
                 .thenReturn(List.of(item));
         mvc.perform(get("/items")
@@ -52,33 +54,36 @@ public class ItemControllerTest {
     }
 
     @Test
-    public void createTest() throws Exception {
+    public void testCreate() throws Exception {
+        userService.save(user);
         when(itemService.save(any()))
                 .thenReturn(item);
         mvc.perform(post("/items")
-                        .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(item))
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
                         .header(HEADER_REQUEST, user.getId()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.description", is(item.getDescription())));
     }
 
     @Test
-    public void updateTest() throws Exception {
+    public void testUpdate() throws Exception {
         Item itemNew = new Item(
                 1L,
                 "name",
-                "description2",
+                "descriptionUpdated",
                 true,
                 user,
                 new ArrayList<>(),
-                1L
+                itemRequest
         );
         when(itemService.get(anyLong()))
                 .thenReturn(item);
         when(itemService.save(any()))
                 .thenReturn(itemNew);
-        mvc.perform(patch("/items/{id}")
+        mvc.perform(patch("/items/{id}", item.getId())
                 .header(HEADER_REQUEST, user.getId())
                 .content(objectMapper.writeValueAsString(itemNew))
                 .characterEncoding(StandardCharsets.UTF_8)
@@ -102,21 +107,22 @@ public class ItemControllerTest {
     public void searchTest() throws Exception {
         when(itemService.searchBy(anyString()))
                 .thenReturn(List.of(item));
-        mvc.perform(get("items/search"))
+        mvc.perform(get("/items/search"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.description", is(item.getDescription())));
+                .andExpect(jsonPath("$[0].description", is(item.getDescription())));
     }
 
     @Test
     public void addCommentTest() throws Exception {
+        userService.save(user);
         when(itemService.saveComment(any()))
                 .thenReturn(comment);
-        mvc.perform(post("items/{id}/comment")
-                .header(HEADER_REQUEST, user.getId())
-                .content(objectMapper.writeValueAsString(comment))
-                .characterEncoding(StandardCharsets.UTF_8)
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON))
+        mvc.perform(post("/items/{id}/comment", item.getId())
+                        .content(objectMapper.writeValueAsString(comment))
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .header(HEADER_REQUEST, 1L))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.text", is(comment.getText())));
     }

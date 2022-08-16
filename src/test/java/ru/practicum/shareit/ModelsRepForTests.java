@@ -1,5 +1,6 @@
 package ru.practicum.shareit;
 
+import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
@@ -14,17 +15,32 @@ import static ru.practicum.shareit.booking.model.Status.WAITING;
 
 public class ModelsRepForTests {
 
-    public static User user = new User(1L, "test", "test@gmail.com");
+    public static User user = new User(
+            1L,
+            "test",
+            "test@gmail.com");
 
-    public static User user2 = new User(2L, "test2", "test2@gmail.com");
+    public static User user2 = new User(
+            2L,
+            "test2",
+            "test2@gmail.com");
 
-    public static User user3 = new User(3L, "test3", "test3@gmail.com");
+    public static User user3 = new User(
+            3L,
+            "test3",
+            "test3@gmail.com");
 
     public static ItemRequest itemRequest = new ItemRequest(
             1L,
             "testDescription",
             user2,
-            new ArrayList<>(),
+            LocalDate.now()
+    );
+
+    public static ItemRequest itemRequest2 = new ItemRequest(
+            2L,
+            "testDescription2",
+            null,
             LocalDate.now()
     );
 
@@ -35,7 +51,7 @@ public class ModelsRepForTests {
             true,
             user,
             new ArrayList<>(),
-            1L
+            itemRequest
     );
 
     public static Item item2 = new Item(
@@ -45,23 +61,22 @@ public class ModelsRepForTests {
             true,
             user2,
             new ArrayList<>(),
-            1L
-    );
-
-    public static Booking booking = new Booking(
-            1L,
-            LocalDateTime.now(),
-            LocalDateTime.now(),
-            item,
-            user2,
-            WAITING
+            itemRequest
     );
 
     public static Comment comment = new Comment(
             1L,
             "comment",
             item,
-            user2,
+            user,
             LocalDateTime.now()
+    );
+    public static Booking booking = new Booking(
+            1L,
+            LocalDateTime.of(2022, 1, 1, 12, 20),
+            LocalDateTime.of(2022, 2, 1, 12, 20),
+            item,
+            user2,
+            WAITING
     );
 }

@@ -2,17 +2,15 @@ package ru.practicum.shareit.item.model;
 
 import lombok.*;
 import org.hibernate.Hibernate;
-import org.springframework.lang.Nullable;
-import ru.practicum.shareit.booking.model.Booking;
+import ru.practicum.shareit.requests.model.ItemRequest;
 import ru.practicum.shareit.user.model.User;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+@AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
@@ -30,33 +28,19 @@ public class Item {
     @NotBlank
     private String description;
 
+    @Column(name = "available")
     private boolean available;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "owner_id")
     private User owner;
 
     @OneToMany(mappedBy = "item", fetch = FetchType.EAGER)
     private List<Comment> comments;
 
-    @Nullable
-    private Long itemRequestId;
-
-    @Transient
-    private Booking lastBooking;
-
-    @Transient
-    private Booking nextBooking;
-
-    public Item(Long id, String name, String description, boolean available,
-                User owner, ArrayList<Comment> comments, Long itemRequestId) {
-        this.id = id;
-        this.name = name;
-        this.description = description;
-        this.available = available;
-        this.owner = owner;
-        this.comments = comments;
-        this.itemRequestId = itemRequestId;
-    }
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "request_id")
+    private ItemRequest itemRequest;
 
     @Override
     public boolean equals(Object o) {

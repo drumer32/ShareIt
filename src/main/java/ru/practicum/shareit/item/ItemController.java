@@ -6,7 +6,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.booking.service.BookingService;
-import ru.practicum.shareit.exceptions.HasNotBookingsException;
 import ru.practicum.shareit.exceptions.ObjectNotValidException;
 import ru.practicum.shareit.item.dto.*;
 import ru.practicum.shareit.item.model.Comment;
@@ -56,8 +55,7 @@ public class ItemController {
 
     @PostMapping
     Item create(@Valid @RequestBody CreateItemDto createItemDto,
-                @RequestHeader(HEADER_REQUEST) long userId,
-            @PathVariable long requestId) {
+                @RequestHeader(HEADER_REQUEST) long userId) {
         Item item = modelMapper.map(createItemDto, Item.class);
         item.setOwner(userService.get(userId));
         return itemService.save(item);
@@ -89,20 +87,13 @@ public class ItemController {
     @PostMapping("{id}/comment")
     PublicCommentDto addComment(@PathVariable long id,
                                 @Valid @RequestBody CreateCommentDto createCommentDto,
-                                @RequestHeader(HEADER_REQUEST) long userId) throws HasNotBookingsException {
-        if (!bookingService.isHasBookingsByItemIdAndUserId(id, userId)) {
-            throw new HasNotBookingsException();
-        }
-
+                                @RequestHeader(HEADER_REQUEST) long userId) {
         Comment comment = modelMapper.map(createCommentDto, Comment.class);
         comment.setItem(itemService.get(id));
         comment.setAuthor(userService.get(userId));
 
         itemService.saveComment(comment);
 
-        PublicCommentDto publicCommentDto = modelMapper.map(comment, PublicCommentDto.class);
-        publicCommentDto.setAuthorName(comment.getAuthor().getName());
-
-        return publicCommentDto;
+        return modelMapper.map(comment, PublicCommentDto.class);
     }
 }

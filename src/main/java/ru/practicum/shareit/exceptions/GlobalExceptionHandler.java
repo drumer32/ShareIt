@@ -29,7 +29,7 @@ public class GlobalExceptionHandler {
         return null;
     }
 
-    @ExceptionHandler({ValidationException.class, HasNotBookingsException.class})
+    @ExceptionHandler({ValidationException.class})
     @ResponseStatus(value = HttpStatus.BAD_REQUEST, reason = "bad request")
     Exception handleValidationException(final Exception e) {
         return null;

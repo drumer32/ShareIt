@@ -31,7 +31,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public Item get(Long id) {
-        return itemRepository.findById(id).orElseThrow();
+        return itemRepository.findById(id).orElse(new Item());
     }
 
     @Override

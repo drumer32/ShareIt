@@ -2,12 +2,15 @@ package ru.practicum.shareit.requests.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.requests.model.ItemRequest;
 import ru.practicum.shareit.requests.repository.ItemRequestRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -17,8 +20,10 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     private final ItemRequestRepository itemRequestRepository;
 
     @Override
-    public List<ItemRequest> getAll(long userId, Pageable pageable) {
-        return itemRequestRepository.findAllByRequesterIdNot(userId, pageable);
+    public List<ItemRequest> getAll(long userId, int from, int size) {
+        Pageable pageable = PageRequest.of(from, size, Sort.by("created").descending());
+        Page<ItemRequest> requests = itemRequestRepository.findAll(pageable);
+        return new ArrayList<>(requests.getContent());
     }
 
     @Override
@@ -28,19 +33,17 @@ public class ItemRequestServiceImpl implements ItemRequestService {
 
     @Override
     public ItemRequest get(long id) {
-        return itemRequestRepository.findById(id).orElseThrow();
+        return itemRequestRepository.findById(id).orElse(null);
     }
 
     @Override
-    @Transactional
     public ItemRequest save(ItemRequest itemRequest) {
         return itemRequestRepository.save(itemRequest);
     }
 
     @Override
-    @Transactional
     public void delete(long id) {
-        itemRequestRepository.delete(itemRequestRepository.getReferenceById(id));
+        itemRequestRepository.delete(get(id));
     }
 
 }

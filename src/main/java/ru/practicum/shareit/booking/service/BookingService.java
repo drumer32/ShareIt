@@ -21,5 +21,4 @@ public interface BookingService {
 
     InnerBookingDto getNextByItemId(long itemId);
 
-    boolean isHasBookingsByItemIdAndUserId(long itemId, long userId);
 }

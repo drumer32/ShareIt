@@ -8,6 +8,7 @@ import ru.practicum.shareit.booking.service.BookingService;
 import ru.practicum.shareit.item.repository.CommentRepository;
 import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.item.service.ItemService;
+import ru.practicum.shareit.requests.service.ItemRequestService;
 import ru.practicum.shareit.user.repository.UserRepository;
 
 import java.util.List;
@@ -26,19 +27,24 @@ public class ItemServiceTest {
     BookingService bookingService;
     ItemRepository itemRepository;
     CommentRepository commentRepository;
+    ItemRequestService itemRequestService;
 
     @Autowired
     public ItemServiceTest(UserRepository userRepository,
                            ItemRepository itemRepository,
                            BookingService bookingService,
-                           ItemService itemService) {
+                           ItemRequestService itemRequestService,
+                           ItemService itemService,
+                           CommentRepository commentRepository) {
         this.userRepository = userRepository;
+        this.itemRepository = itemRepository;
+        this.bookingService = bookingService;
+        this.itemRequestService = itemRequestService;
+        this.itemService = itemService;
+        this.commentRepository = commentRepository;
         userRepository.save(user);
         userRepository.save(user2);
-        this.itemRepository = itemRepository;
         itemRepository.save(item);
-        this.bookingService = bookingService;
-        this.itemService = itemService;
     }
 
     @Test
@@ -54,7 +60,7 @@ public class ItemServiceTest {
     @Test
     void save() {
         itemRepository.save(item2);
-        assertEquals(itemRepository.findById(user.getId()).orElse(null), item2);
+        assertEquals(itemRepository.findById(user2.getId()).orElse(null), item2);
     }
 
     @Test
@@ -70,6 +76,7 @@ public class ItemServiceTest {
 
     @Test
     void saveComment() {
-        assertEquals(commentRepository.findById(comment.getId()).orElse(null), comment);
+        commentRepository.save(comment);
+        assertEquals(comment, commentRepository.findById(comment.getId()).orElse(null));
     }
 }

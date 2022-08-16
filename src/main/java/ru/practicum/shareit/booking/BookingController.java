@@ -9,7 +9,6 @@ import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.Status;
 import ru.practicum.shareit.booking.service.BookingService;
 import ru.practicum.shareit.exceptions.ItemNotAvailableException;
-import ru.practicum.shareit.exceptions.ObjectNotFoundException;
 import ru.practicum.shareit.exceptions.ObjectNotValidException;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.service.ItemService;
@@ -45,15 +44,9 @@ public class BookingController {
 
     @PostMapping
     Booking create(@Valid @RequestBody BookingDto createBookingDto,
-                   @RequestHeader(HEADER_REQUEST) long userId) throws ItemNotAvailableException, ObjectNotFoundException {
+                   @RequestHeader(HEADER_REQUEST) Long userId) {
         Item item = itemService.get(createBookingDto.getItemId());
         User user = userService.get(userId);
-
-        if (!item.isAvailable()) throw new ItemNotAvailableException();
-
-        if (item.getOwner().getId() == userId) {
-            throw new ObjectNotFoundException();
-        }
 
         if (createBookingDto.getEnd().isBefore(createBookingDto.getStart())) {
             throw new ValidationException();

@@ -91,10 +91,4 @@ public class BookingServiceImpl implements BookingService {
         innerBookingDto.setBookerId(booking.getBooker().getId());
         return innerBookingDto;
     }
-
-    @Override
-    public boolean isHasBookingsByItemIdAndUserId(long itemId, long userId) {
-        return bookingRepository.countByItemIdAndBookerIdAndStatusAndStartBefore(itemId, userId,
-                Status.APPROVED, LocalDateTime.now()) > 0;
-    }
 }
