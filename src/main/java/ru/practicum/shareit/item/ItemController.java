@@ -46,7 +46,7 @@ public class ItemController {
         Item item = itemService.get(id);
         OwnerItemDto ownerItemDto = modelMapper.map(item, OwnerItemDto.class);
         ownerItemDto.setComments(itemService.getComments(id));
-        if (item.getOwner().getId() == userId) {
+        if (item.getOwner().getId().equals(userId)) {
             ownerItemDto.setLastBooking(bookingService.getLastByItemId(id));
             ownerItemDto.setNextBooking(bookingService.getNextByItemId(id));
         }
