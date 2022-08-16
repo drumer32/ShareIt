@@ -1,9 +1,6 @@
 package ru.practicum.shareit.requests.service;
 
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
 import ru.practicum.shareit.requests.model.ItemRequest;
-import ru.practicum.shareit.requests.model.PublicItemRequestDto;
 
 import java.util.List;
 
