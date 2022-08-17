@@ -31,7 +31,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public Item get(Long id) {
-        return itemRepository.findById(id).orElse(new Item());
+        return itemRepository.findById(id).orElse(null);
     }
 
     @Override
@@ -43,7 +43,7 @@ public class ItemServiceImpl implements ItemService {
     @Override
     @Transactional
     public void delete(Long id) {
-        itemRepository.delete(itemRepository.getReferenceById(id));
+        itemRepository.delete(get(id));
     }
 
     @Override

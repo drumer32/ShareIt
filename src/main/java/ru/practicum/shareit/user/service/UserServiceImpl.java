@@ -11,31 +11,31 @@ import ru.practicum.shareit.user.repository.UserRepository;
 import java.util.List;
 
 @Service
-@Slf4j
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class UserServiceImpl implements UserService {
-    private final UserRepository userRepository;
+
+    private final UserRepository repository;
 
     @Override
     public List<User> getAll() {
-        return userRepository.findAll();
+        return repository.findAll();
     }
 
     @Override
     public User get(Long id) {
-        return userRepository.findById(id).orElse(new User());
+        return repository.findById(id).orElse(null);
     }
 
     @Override
     @Transactional
     public User save(User user) {
-        return userRepository.save(user);
+        return repository.save(user);
     }
 
     @Override
     @Transactional
     public void delete(Long id) {
-        userRepository.delete(userRepository.getReferenceById(id));
+        repository.delete(get(id));
     }
 }

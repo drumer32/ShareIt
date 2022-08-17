@@ -4,7 +4,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.shareit.user.repository.UserRepository;
 import ru.practicum.shareit.user.service.UserService;
 
 import java.util.List;
@@ -16,16 +15,13 @@ import static ru.practicum.shareit.ModelsRepForTests.*;
 @SpringBootTest
 public class UserServiceTest {
 
-    private final UserRepository userRepository;
     private final UserService userService;
 
-
     @Autowired
-    public UserServiceTest(UserRepository userRepository, UserService userService) {
-        this.userRepository = userRepository;
+    UserServiceTest(UserService userService) {
         this.userService = userService;
-        userRepository.save(user);
-        userRepository.save(user2);
+        userService.save(user);
+        userService.save(user2);
     }
 
     @Test
@@ -47,6 +43,6 @@ public class UserServiceTest {
     @Test
     void testDelete() {
         userService.delete(user.getId());
-        assertNull(userRepository.findById(user.getId()).orElse(null));
+        assertNull(userService.get(user.getId()));
     }
 }

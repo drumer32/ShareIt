@@ -60,13 +60,13 @@ public class ItemServiceTest {
     @Test
     void save() {
         itemRepository.save(item2);
-        assertEquals(itemRepository.findById(user2.getId()).orElse(null), item2);
+        assertEquals(item2, itemService.get(item2.getId()));
     }
 
     @Test
     void deleteItem() {
         itemService.delete(item.getId());
-        assertNull(itemRepository.findById(user.getId()).orElse(null));
+        assertNull(itemService.get(item.getId()));
     }
 
     @Test

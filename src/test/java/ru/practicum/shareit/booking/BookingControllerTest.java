@@ -9,8 +9,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.practicum.shareit.booking.service.BookingService;
-import ru.practicum.shareit.item.service.ItemService;
-import ru.practicum.shareit.user.service.UserService;
+import ru.practicum.shareit.item.repository.ItemRepository;
 
 import java.nio.charset.StandardCharsets;
 
@@ -32,10 +31,7 @@ public class BookingControllerTest {
     private BookingService bookingService;
 
     @MockBean
-    private UserService service;
-
-    @MockBean
-    private ItemService itemService;
+    ItemRepository repository;
 
     @Autowired
     private final ObjectMapper mapper = new ObjectMapper();
@@ -47,6 +43,7 @@ public class BookingControllerTest {
 
     @Test
     void testCreate() throws Exception {
+        repository.save(item);
         when(bookingService.save(any()))
                 .thenReturn(booking);
 
@@ -55,7 +52,7 @@ public class BookingControllerTest {
                         .characterEncoding(StandardCharsets.UTF_8)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
-                        .header(HEADER_REQUEST, 1L))
+                        .header(HEADER_REQUEST, user.getId()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.item.name", is(booking.getItem().getName())));
     }
