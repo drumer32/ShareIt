@@ -14,6 +14,7 @@ import java.util.Objects;
 @Setter
 @ToString
 @RequiredArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "bookings")
 public class Booking {
@@ -28,11 +29,9 @@ public class Booking {
     @Column(name = "end_date_time")
     @NotNull LocalDateTime end;
 
-    @NotNull
     @ManyToOne
     Item item;
 
-    @NotNull
     @ManyToOne
     User booker;
 

@@ -33,7 +33,7 @@ public class BookingController {
     private final ModelMapper modelMapper;
 
     @GetMapping("{id}")
-    Booking get(@PathVariable long id, @RequestHeader(HEADER_REQUEST) long userId) throws ObjectNotValidException {
+    Booking get(@PathVariable long id, @RequestHeader(HEADER_REQUEST) long userId) throws ObjectNotValidException, ObjectNotFoundException {
         Booking booking = bookingService.get(id);
 
         if (!(booking.getBooker().getId() == userId || booking.getItem().getOwner().getId() == userId)) {
@@ -45,15 +45,9 @@ public class BookingController {
 
     @PostMapping
     Booking create(@Valid @RequestBody BookingDto createBookingDto,
-                   @RequestHeader(HEADER_REQUEST) long userId) throws ItemNotAvailableException, ObjectNotFoundException {
+                   @RequestHeader(HEADER_REQUEST) Long userId) throws ObjectNotFoundException {
         Item item = itemService.get(createBookingDto.getItemId());
         User user = userService.get(userId);
-
-        if (!item.isAvailable()) throw new ItemNotAvailableException();
-
-        if (item.getOwner().getId() == userId) {
-            throw new ObjectNotFoundException();
-        }
 
         if (createBookingDto.getEnd().isBefore(createBookingDto.getStart())) {
             throw new ValidationException();
@@ -68,7 +62,7 @@ public class BookingController {
     }
 
     @PatchMapping("{id}")
-    Booking update(@PathVariable long id, @RequestParam boolean approved, @RequestHeader(HEADER_REQUEST) long userId) throws ObjectNotValidException, ItemNotAvailableException {
+    Booking update(@PathVariable long id, @RequestParam boolean approved, @RequestHeader(HEADER_REQUEST) long userId) throws ObjectNotValidException, ItemNotAvailableException, ObjectNotFoundException {
         Booking booking = bookingService.get(id);
 
         if (booking.getItem().getOwner().getId() != userId) throw new ObjectNotValidException();
@@ -82,7 +76,7 @@ public class BookingController {
     }
 
     @DeleteMapping("{id}")
-    void delete(@PathVariable long id) {
+    void delete(@PathVariable long id) throws ObjectNotFoundException {
         bookingService.delete(id);
     }
 
