@@ -6,6 +6,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.booking.service.BookingService;
+import ru.practicum.shareit.exceptions.ObjectNotFoundException;
 import ru.practicum.shareit.exceptions.ObjectNotValidException;
 import ru.practicum.shareit.item.dto.*;
 import ru.practicum.shareit.item.model.Comment;
@@ -42,7 +43,7 @@ public class ItemController {
     }
 
     @GetMapping("{id}")
-    OwnerItemDto get(@PathVariable Long id, @RequestHeader(HEADER_REQUEST) Long userId) {
+    OwnerItemDto get(@PathVariable Long id, @RequestHeader(HEADER_REQUEST) Long userId) throws ObjectNotFoundException {
         Item item = itemService.get(id);
         OwnerItemDto ownerItemDto = modelMapper.map(item, OwnerItemDto.class);
         ownerItemDto.setComments(itemService.getComments(id));
@@ -55,7 +56,7 @@ public class ItemController {
 
     @PostMapping
     Item create(@Valid @RequestBody CreateItemDto createItemDto,
-                @RequestHeader(HEADER_REQUEST) long userId) {
+                @RequestHeader(HEADER_REQUEST) long userId) throws ObjectNotFoundException {
         Item item = modelMapper.map(createItemDto, Item.class);
         item.setOwner(userService.get(userId));
         return itemService.save(item);
@@ -64,7 +65,7 @@ public class ItemController {
     @PatchMapping("{id}")
     Item update(@PathVariable long id,
                 @Valid @RequestBody UpdateItemDto updateItemDto,
-                @RequestHeader(HEADER_REQUEST) long userId) throws ObjectNotValidException {
+                @RequestHeader(HEADER_REQUEST) long userId) throws ObjectNotValidException, ObjectNotFoundException {
         Item item = itemService.get(id);
         if (item.getOwner().getId() != userId) throw new ObjectNotValidException();
         modelMapper.map(updateItemDto, item);
@@ -72,7 +73,7 @@ public class ItemController {
     }
 
     @DeleteMapping("{id}")
-    void delete(@PathVariable long id) {
+    void delete(@PathVariable long id) throws ObjectNotFoundException {
         itemService.delete(id);
     }
 
@@ -87,7 +88,7 @@ public class ItemController {
     @PostMapping("{id}/comment")
     PublicCommentDto addComment(@PathVariable long id,
                                 @Valid @RequestBody CreateCommentDto createCommentDto,
-                                @RequestHeader(HEADER_REQUEST) long userId) {
+                                @RequestHeader(HEADER_REQUEST) long userId) throws ObjectNotFoundException {
         Comment comment = modelMapper.map(createCommentDto, Comment.class);
         comment.setItem(itemService.get(id));
         comment.setAuthor(userService.get(userId));

@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.shareit.exceptions.ObjectNotFoundException;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.model.UserDto;
 import ru.practicum.shareit.user.service.UserService;
@@ -26,19 +27,19 @@ public class UserController {
     }
 
     @PatchMapping(value = {"/{id}"})
-    public User updateUser(@Validated @RequestBody UserDto userDto, @PathVariable Long id) {
+    public User updateUser(@Validated @RequestBody UserDto userDto, @PathVariable Long id) throws ObjectNotFoundException {
         User user = userService.get(id);
         modelMapper.map(userDto, user);
         return userService.save(user);
     }
 
     @DeleteMapping(value = {"/{id}"})
-    public void deleteUser(@PathVariable Long id) {
+    public void deleteUser(@PathVariable Long id) throws ObjectNotFoundException {
         userService.delete(id);
     }
 
     @GetMapping(value = {"/{id}"})
-    public User getUserById(@PathVariable Long id) {
+    public User getUserById(@PathVariable Long id) throws ObjectNotFoundException {
         return userService.get(id);
     }
 

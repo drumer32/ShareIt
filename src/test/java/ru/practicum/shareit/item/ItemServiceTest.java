@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.service.BookingService;
+import ru.practicum.shareit.exceptions.ObjectNotFoundException;
 import ru.practicum.shareit.item.repository.CommentRepository;
 import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.item.service.ItemService;
@@ -13,9 +14,7 @@ import ru.practicum.shareit.user.repository.UserRepository;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
-
+import static org.junit.jupiter.api.Assertions.*;
 import static ru.practicum.shareit.ModelsRepForTests.*;
 
 @Transactional
@@ -48,25 +47,25 @@ public class ItemServiceTest {
     }
 
     @Test
-    void getAll() {
+    void testGetAll() {
         assertEquals(List.of(item), itemService.getAll(user.getId()));
     }
 
     @Test
-    void get() {
+    void testGet() throws ObjectNotFoundException {
         assertEquals(item, itemService.get(item.getId()));
     }
 
     @Test
-    void save() {
+    void testSave() throws ObjectNotFoundException {
         itemRepository.save(item2);
         assertEquals(item2, itemService.get(item2.getId()));
     }
 
     @Test
-    void deleteItem() {
+    void testDeleteItem() throws ObjectNotFoundException {
         itemService.delete(item.getId());
-        assertNull(itemService.get(item.getId()));
+        assertThrows(ObjectNotFoundException.class, () -> itemService.get(item.getId()));
     }
 
     @Test

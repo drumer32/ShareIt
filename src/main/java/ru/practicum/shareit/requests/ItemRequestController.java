@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.shareit.exceptions.ObjectNotFoundException;
 import ru.practicum.shareit.exceptions.ObjectNotValidException;
 import ru.practicum.shareit.requests.model.ItemRequestDto;
 import ru.practicum.shareit.requests.model.ItemRequest;
@@ -31,7 +32,7 @@ public class ItemRequestController {
     }
 
     @GetMapping("{id}")
-    PublicItemRequestDto get(@PathVariable long id) {
+    PublicItemRequestDto get(@PathVariable long id) throws ObjectNotFoundException {
         ItemRequest itemRequest = itemRequestService.get(id);
         return modelMapper.map(itemRequest, PublicItemRequestDto.class);
     }
@@ -51,7 +52,7 @@ public class ItemRequestController {
     @PatchMapping("{id}")
     PublicItemRequestDto update(@PathVariable long id,
                        @Valid @RequestBody ItemRequestDto itemRequestDto,
-                       @RequestHeader(HEADER_REQUEST) long userId) throws ObjectNotValidException {
+                       @RequestHeader(HEADER_REQUEST) long userId) throws ObjectNotValidException, ObjectNotFoundException {
         ItemRequest itemRequest = itemRequestService.get(id);
         if (itemRequest.getRequester().getId() != userId) throw new ObjectNotValidException();
         modelMapper.map(itemRequestDto, itemRequest);
@@ -59,7 +60,7 @@ public class ItemRequestController {
     }
 
     @DeleteMapping("{id}")
-    void delete(@PathVariable long id) {
+    void delete(@PathVariable long id) throws ObjectNotFoundException {
         itemRequestService.delete(id);
     }
 }

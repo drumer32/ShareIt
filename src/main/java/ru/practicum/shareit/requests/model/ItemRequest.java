@@ -11,7 +11,7 @@ import java.util.Objects;
 @Setter
 @ToString
 @AllArgsConstructor
-@RequiredArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "item_requests")
 public class ItemRequest {

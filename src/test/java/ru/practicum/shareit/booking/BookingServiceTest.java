@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.repository.BookingRepository;
 import ru.practicum.shareit.booking.service.BookingService;
+import ru.practicum.shareit.exceptions.ObjectNotFoundException;
 import ru.practicum.shareit.item.service.ItemService;
 import ru.practicum.shareit.user.service.UserService;
 
@@ -43,12 +44,12 @@ public class BookingServiceTest {
     }
 
     @Test
-    void testGet() {
+    void testGet() throws ObjectNotFoundException {
         assertEquals(booking, bookingService.get(booking.getId()));
     }
 
     @Test
-    void testDelete() {
+    void testDelete() throws ObjectNotFoundException {
         bookingService.delete(booking.getId());
         assertNull(bookingRepository.findById(booking.getId()).orElse(null));
     }

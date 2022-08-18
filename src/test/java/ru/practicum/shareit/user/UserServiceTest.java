@@ -4,11 +4,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.shareit.exceptions.ObjectNotFoundException;
 import ru.practicum.shareit.user.service.UserService;
 
 import java.util.List;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+
+import static org.junit.jupiter.api.Assertions.*;
 import static ru.practicum.shareit.ModelsRepForTests.*;
 
 @Transactional
@@ -25,7 +26,7 @@ public class UserServiceTest {
     }
 
     @Test
-    void testSave() {
+    void testSave() throws ObjectNotFoundException {
         userService.save(user3);
         assertEquals(user3, userService.get(user3.getId()));
     }
@@ -36,13 +37,13 @@ public class UserServiceTest {
     }
 
     @Test
-    void testGet() {
+    void testGet() throws ObjectNotFoundException {
         assertEquals(user, userService.get(user.getId()));
     }
 
     @Test
-    void testDelete() {
+    void testDelete() throws ObjectNotFoundException {
         userService.delete(user.getId());
-        assertNull(userService.get(user.getId()));
+        assertThrows(ObjectNotFoundException.class, () -> userService.get(user.getId()));
     }
 }

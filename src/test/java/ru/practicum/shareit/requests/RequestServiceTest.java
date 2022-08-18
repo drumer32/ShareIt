@@ -3,6 +3,7 @@ package ru.practicum.shareit.requests;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import ru.practicum.shareit.exceptions.ObjectNotFoundException;
 import ru.practicum.shareit.requests.repository.ItemRequestRepository;
 import ru.practicum.shareit.requests.service.ItemRequestService;
 import ru.practicum.shareit.user.service.UserService;
@@ -10,6 +11,7 @@ import ru.practicum.shareit.user.service.UserService;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static ru.practicum.shareit.ModelsRepForTests.*;
 
 @SpringBootTest
@@ -34,19 +36,24 @@ public class RequestServiceTest {
     }
 
     @Test
-    void save() {
+    void testSave() throws ObjectNotFoundException {
         requestService.save(itemRequest2);
         assertEquals(itemRequest2, requestService.get(itemRequest2.getId()));
     }
 
     @Test
-    void get() {
+    void testGet() throws ObjectNotFoundException {
         assertEquals(itemRequest, requestService.get(itemRequest.getId()));
     }
 
     @Test
-    void getAllByOwnerId() {
+    void testGetAllByOwnerId() {
         assertEquals(List.of(), requestService.getAllByOwnerId(user.getId()));
     }
 
+    @Test
+    void testDelete() throws ObjectNotFoundException {
+        requestService.delete(itemRequest.getId());
+        assertThrows(ObjectNotFoundException.class, () -> requestService.get(itemRequest.getId()));
+    }
 }
