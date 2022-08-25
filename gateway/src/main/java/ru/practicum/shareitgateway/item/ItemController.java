@@ -17,7 +17,7 @@ import ru.practicum.shareitgateway.item.dto.UpdateItemDto;
 @Validated
 public class ItemController {
 
-    private ItemClient client;
+    private final ItemClient client;
 
     private static final String HEADER_REQUEST = "X-Sharer-User-Id";
 

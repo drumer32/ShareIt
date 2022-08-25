@@ -24,7 +24,7 @@ import ru.practicum.shareitgateway.user.dto.UpdateUserDto;
 @Validated
 public class UserController {
 
-    private UserClient client;
+    private final UserClient client;
 
     @PostMapping
     public Object createUser(@Valid @RequestBody CreateUserDto dto) {

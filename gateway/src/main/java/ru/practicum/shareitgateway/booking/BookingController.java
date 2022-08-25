@@ -15,7 +15,7 @@ import ru.practicum.shareitgateway.booking.dto.CreateBookingDto;
 @Validated
 public class BookingController {
 
-    private BookingClient client;
+    private final BookingClient client;
 
     private static final String HEADER_REQUEST = "X-Sharer-User-Id";
 

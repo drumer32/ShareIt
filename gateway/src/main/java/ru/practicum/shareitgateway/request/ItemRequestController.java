@@ -14,7 +14,7 @@ import ru.practicum.shareitgateway.request.dto.CreateItemRequestDto;
 @Validated
 public class ItemRequestController {
 
-    private RequestClient client;
+    private final RequestClient client;
 
     private static final String HEADER_REQUEST = "X-Sharer-User-Id";
 
